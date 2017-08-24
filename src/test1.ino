@@ -1,13 +1,22 @@
+#include <MsTimer2.h>
+
 const int LED_PIN = 5;
 const int BUTTON_PIN = 2;
+const int PERIOD = 3000;
 
 volatile bool output_mode; // Turn on LED when true
+long count = 0;
 
 void setup () {
     pinMode(BUTTON_PIN, INPUT_PULLUP);
     pinMode(LED_PIN, OUTPUT);
     output_mode = false;
     attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), toggle_LED, FALLING);
+    Serial.begin(9600);
+    Serial.println("Serial communication start.");
+    MsTimer2::set(PERIOD, print);
+    MsTimer2::start();
+
 }
 
 void loop() {
@@ -24,4 +33,11 @@ void loop() {
 
 void toggle_LED() {
     output_mode = !output_mode;
+    Serial.print("Pressed ");
+    Serial.print(++count);
+    Serial.println(" times.");
+}
+
+void print() {
+    Serial.println("3秒経ちました");
 }
