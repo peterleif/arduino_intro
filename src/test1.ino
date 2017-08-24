@@ -1,31 +1,27 @@
 const int LED_PIN = 5;
-const int BUTTON_PIN = 4;
+const int BUTTON_PIN = 2;
 
-bool output_mode; // Turn on LED when true
-auto button_state = HIGH;
+volatile bool output_mode; // Turn on LED when true
 
 void setup () {
     pinMode(BUTTON_PIN, INPUT_PULLUP);
     pinMode(LED_PIN, OUTPUT);
     output_mode = false;
+    attachInterrupt(digitalPinToInterrupt(BUTTON_PIN), toggle_LED, FALLING);
 }
 
 void loop() {
-    if (digitalRead(BUTTON_PIN) != button_state) {
-        button_state = digitalRead(BUTTON_PIN);
-        if (button_state == LOW) {
-            output_mode = !output_mode;
-        }
-        delay(50); // チャタリング対策
-    }
-
-    if (output_mode == true) {
-        for (auto i = 0; i < 255; ++i) {
+    for (auto i = 0; i < 255; ++i) {
+        if (output_mode == true) {
             analogWrite(LED_PIN, i);
-            delay(20);
         }
+        else {
+            analogWrite(LED_PIN, 0);
+        }
+        delay(20);
     }
-    else {
-        analogWrite(LED_PIN, 0);
-    }
+}
+
+void toggle_LED() {
+    output_mode = !output_mode;
 }
