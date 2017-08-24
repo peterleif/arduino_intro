@@ -10,7 +10,7 @@ void setup () {
 }
 
 void loop() {
-    if (digitalRead(BUTTON_PIN) == false) {
+    if (digitalRead(BUTTON_PIN) == LOW) {
         output_mode = !output_mode;
     }
 
